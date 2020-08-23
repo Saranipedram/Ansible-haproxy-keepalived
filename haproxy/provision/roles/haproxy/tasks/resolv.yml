@@ -1,0 +1,5 @@
+- name: copy resolve conf file with to node
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+  tags: [copy_resolveconf]

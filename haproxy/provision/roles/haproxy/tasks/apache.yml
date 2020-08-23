@@ -1,0 +1,27 @@
+- name: install apache
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - epel-release
+    - httpd
+    - httpd-tools
+  when: ansible_os_family == "RedHat"
+
+- name: enable apache
+  systemd:
+    name: httpd
+    enabled: yes
+    masked: no
+  when: ansible_os_family == "RedHat"
+- name: start apache
+  systemd:
+    name: httpd
+    state: started
+  when: ansible_os_family == "RedHat"
+
+- name: copy index.html to /var/www/html
+  template:
+    src: index.html
+    dest: /var/www/html
+

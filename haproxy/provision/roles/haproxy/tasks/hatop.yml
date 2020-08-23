@@ -1,0 +1,25 @@
+---
+- name: hatop Source Directory is exist
+  file:
+    path={{ hatop_src_dir }} 
+    state=directory
+
+- name: Download hatop binary to src directory
+  get_url: >
+    url={{ hatop_download_url }}
+    dest={{ hatop_src_dir }}
+
+- name: Extract hatop file and check the file exist
+  shell: >
+    tar xvf {{ hatop_src_dir }}/{{ hatop_archive_name }} -C {{ hatop_src_dir }}
+    creates={{ hatop_src_dir }}/{{ hatop_dir_name }}
+
+- name: Install hatop and check permission for file
+  shell: >
+    cd {{ hatop_src_dir }}/{{ hatop_dir_name }} && install -m 755 bin/hatop {{ hatop_install_dir }}
+    creates={{ hatop_install_dir }}/hatop
+
+- name: Install Hatop man page
+  shell: >
+    cd {{ hatop_src_dir }}/{{ hatop_dir_name }} && install -m 644 man/hatop.1 /usr/local/share/man/man1
+    creates=/usr/local/share/man/man1/hatop.1

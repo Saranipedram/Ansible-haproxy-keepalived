@@ -1,0 +1,28 @@
+global
+    daemon
+    maxconn 50000
+    stats socket /var/lib/haproxy/haproxy.sock mode 0600 level admin
+defaults
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+
+frontend front_in
+    bind {{ haproxy_bind_address }}:8182
+    default_backend check_frontend
+
+backend check_frontend
+    mode http 
+    balance roundrobin
+{% for balancing_server in haproxy_balancing_servers %}
+    server {{ balancing_server.name }} {{ balancing_server.ip }}:8080 maxconn 40000 check
+{% endfor %}
+    option forwardfor
+
+listen stats
+   bind 192.168.1.120:8181        
+   mode http
+   stats enable
+   stats realm Haproxy\ Statistics
+   stats uri /
+   stats auth admin:admin

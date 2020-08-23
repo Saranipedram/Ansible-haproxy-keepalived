@@ -1,0 +1,6 @@
+---
+- include: haproxy.yml
+- include: resolv.yml
+- include: hatop.yml
+- include: keepalived.yml
+- include: apache.yml

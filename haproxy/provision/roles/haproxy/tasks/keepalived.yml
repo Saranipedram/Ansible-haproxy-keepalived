@@ -1,0 +1,27 @@
+---
+- name: Install Keepalive(CentOs)
+  yum:
+    name=keepalived
+  when: ansible_os_family == "RedHat"
+
+- name: Install Keepalive(Debian)
+  apt:
+    name=keepalived
+  when: ansible_os_family == "Debian"
+
+- name: Copy config File
+  template: >
+    src=keepalived.conf.j2
+    dest=/etc/keepalived/keepalived.conf
+
+- name: Keepalive Service Start
+  service: >
+    name=keepalived
+    state=started
+    enabled=yes
+
+- name: Keepalive Sercice enabled
+  systemd:
+    name: keepalived
+    enabled: yes
+    masked: no
